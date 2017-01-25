@@ -205,12 +205,12 @@ static inline void xor_blocks(uint8_t *restrict a, const uint8_t *restrict b) {
     ((uint64_t*) a)[1] ^= ((uint64_t*) b)[1];
 }
 
-void cryptonight_hash_ctx(void *restrict output, const void *restrict input, struct cryptonight_ctx *restrict ctx) {
+void cryptonight_hash_ctx(void *restrict output, const void *restrict input, int inlen, struct cryptonight_ctx *restrict ctx) {
     
     ctx->aes_ctx = (oaes_ctx*) oaes_alloc();
     size_t i, j;
     //hash_process(&ctx->state.hs, (const uint8_t*) input, 76);
-    keccak((const uint8_t *)input, 76, &ctx->state.hs, 200);
+    keccak((const uint8_t *)input, inlen, &ctx->state.hs, 200);
     memcpy(ctx->text, ctx->state.init, INIT_SIZE_BYTE);
     
     oaes_key_import_data(ctx->aes_ctx, ctx->state.hs.b, AES_KEY_SIZE);
