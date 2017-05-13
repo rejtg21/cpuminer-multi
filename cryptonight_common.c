@@ -51,13 +51,13 @@ int scanhash_cryptonight(int thr_id, uint32_t *restrict pdata, int dlen, const u
     uint32_t *nonceptr = (uint32_t*) (((char*)pdata) + 39);
     uint32_t n = *nonceptr - 1;
     const uint32_t first_nonce = n + 1;
-    const uint32_t Htarg = ptarget[7];
-    uint32_t hash[32 / 4] __attribute__((aligned(32)));
+    const uint64_t Htarg = ((const uint64_t *)ptarget)[3];
+    uint64_t hash[32 / 8] __attribute__((aligned(64)));
 	
 	do {
 		*nonceptr = ++n;
 		cryptonight_hash_ctx(hash, pdata, dlen, persistentctx);
-		if (unlikely(hash[7] < ptarget[7])) {
+		if (unlikely(hash[3] < Htarg)) {
 			*hashes_done = n - first_nonce + 1;
 			return true;
 		}
