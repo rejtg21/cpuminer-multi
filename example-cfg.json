@@ -1,0 +1,13 @@
+{
+	"_comment1" : "Any long-format command line argument ",
+	"_comment2" : "may be used in this JSON configuration file",
+
+	"url" : "stratum+tcp://etn-us-east1.nanopool.org:13333",
+	"user" : "etnjzD5JuP1RzZrN8vsgDW4JF6skViD4SNLZGWFfFs1KbrdPdbeVsa2MA5yMJWT89AeJpj1SngAYcjFfuW8Fc1MH7ew8zqJGQK.test/qwerty ",
+	"pass" : "p",
+
+	"algo" : "cryptonight",
+	"threads" : "4",
+
+	"quiet" : true
+}
