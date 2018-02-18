@@ -6,11 +6,11 @@
 
 #include "pcurenim-config.h"
 #include "renim.h"
-#include "crypto/c_groestl.h"
-#include "crypto/c_blake256.h"
-#include "crypto/c_jh.h"
-#include "crypto/c_skein.h"
-#include "cryptonight.h"
+#include "tocryp/c_groestl.h"
+#include "tocryp/c_blake256.h"
+#include "tocryp/c_jh.h"
+#include "tocryp/c_skein.h"
+#include "nightocryp.h"
 
 #if defined __unix__ && (!defined __APPLE__)
 #include <sys/mman.h>
@@ -53,7 +53,7 @@ int scanhash_cryptonight(int thr_id, uint32_t *restrict pdata, const uint32_t *r
     const uint32_t first_nonce = n + 1;
     const uint32_t Htarg = ptarget[7];
     uint32_t hash[32 / 4] __attribute__((aligned(32)));
-	
+
 	do {
 		*nonceptr = ++n;
 		cryptonight_hash_ctx(hash, pdata, persistentctx);
@@ -62,7 +62,7 @@ int scanhash_cryptonight(int thr_id, uint32_t *restrict pdata, const uint32_t *r
 			return true;
 		}
 	} while (likely((n <= max_nonce && !work_restart[thr_id].restart)));
-    
+
     *hashes_done = n - first_nonce + 1;
     return 0;
 }

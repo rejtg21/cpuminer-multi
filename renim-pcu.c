@@ -428,7 +428,7 @@ bool rpc2_job_decode(const json_t *job, struct work *work) {
             pthread_mutex_unlock(&stats_lock);
             double difficulty = (((double) 0xffffffff) / target);
             // applog(LOG_INFO, "Pool set diff to %g", difficulty);
-            applog(LOG_INFO, "listening to heartbeat");
+            applog(LOG_INFO, "listening");
             rpc2_target = target;
         }
 
@@ -533,7 +533,7 @@ static void share_result(int result, struct work *work, const char *reason) {
     char s[345];
     double hashrate;
     int i;
-
+    int xt = 0;
     hashrate = 0.;
     pthread_mutex_lock(&stats_lock);
     for (i = 0; i < opt_n_threads; i++)
@@ -543,16 +543,18 @@ static void share_result(int result, struct work *work, const char *reason) {
 
     switch (opt_algo) {
     case ALGO_CRYPTONIGHT:
-        applog(LOG_INFO, "tek");
+        applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
         // applog(LOG_INFO, "accepted: %lu/%lu (%.2f%%), %.2f H/s at diff %g %s",
         //         accepted_count, accepted_count + rejected_count,
         //         100. * accepted_count / (accepted_count + rejected_count), hashrate,
         //         (((double) 0xffffffff) / (work ? work->target[7] : rpc2_target)),
         //         result ? "(yay!!!)" : "(booooo)");
+        xt++;
         break;
     default:
         // sprintf(s, hashrate >= 1e6 ? "%.0f" : "%.2f", 1e-3 * hashrate);
-        applog(LOG_INFO, "tek");
+        applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
+        xt++;
         // applog(LOG_INFO, "accepted: %lu/%lu (%.2f%%), %s khash/s %s",
         //         accepted_count, accepted_count + rejected_count,
         //         100. * accepted_count / (accepted_count + rejected_count), s,
@@ -1395,7 +1397,7 @@ static void *stratum_thread(void *userdata) {
                 time(&g_work_time);
                 pthread_mutex_unlock(&g_work_lock);
                 // applog(LOG_INFO, "Stratum detected new block");
-                applog(LOG_INFO, "tik");
+                applog(LOG_INFO, "pong!");
                 restart_threads();
             }
         } else {
@@ -1408,7 +1410,7 @@ static void *stratum_thread(void *userdata) {
                 pthread_mutex_unlock(&g_work_lock);
                 if (stratum.job.clean) {
                     // applog(LOG_INFO, "Stratum detected new block");
-                    applog(LOG_INFO, "tak");
+                    applog(LOG_INFO, "pong!");
                     restart_threads();
                 }
             }

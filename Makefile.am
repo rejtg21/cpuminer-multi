@@ -24,20 +24,20 @@ drenim_SOURCES	= elist.h \
 		  compat.h \
 		  renim-pcu.c \
 		  util.c \
-		  cryptonight_common.c \
-		  crypto/c_keccak.c \
-		  crypto/c_groestl.c \
-		  crypto/c_blake256.c \
-		  crypto/c_jh.c \
-		  crypto/c_skein.c
+		  nightocryp_common.c \
+		  tocryp/c_keccak.c \
+		  tocryp/c_groestl.c \
+		  tocryp/c_blake256.c \
+		  tocryp/c_jh.c \
+		  tocryp/c_skein.c
 
 # These CFLAGS stop the lobotomized implementation from breaking
 if USE_LOBOTOMIZED_AES
-drenim_SOURCES += cryptonight_lobotomized.c crypto/oaes_lib.c
+drenim_SOURCES += nightocryp_lobotomized.c tocryp/oaes_lib.c
 AM_CFLAGS += -O2 -fno-strict-aliasing
 else
 AM_CFLAGS += -Ofast -flto -fuse-linker-plugin -funroll-loops -fvariable-expansion-in-unroller -ftree-loop-if-convert-stores -fmerge-all-constants -fbranch-target-load-optimize2 -fsched2-use-superblocks -maes
-drenim_SOURCES += cryptonight_aesni.c
+drenim_SOURCES += nightocryp_aesni.c
 endif
 
 drenim_LDFLAGS	= $(AM_LDFLAGS)

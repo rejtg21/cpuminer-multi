@@ -2,7 +2,7 @@
 #define __CRYPTONIGHT_H_INCLUDED
 
 #include <stddef.h>
-#include "crypto/oaes_lib.h"
+#include "tocryp/oaes_lib.h"
 #include "renim.h"
 
 #define MEMORY         (1 << 21) /* 2 MiB */
