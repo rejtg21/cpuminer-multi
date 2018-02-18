@@ -1,4 +1,4 @@
-#include "cryptonight.h"
+#include "nightocryp.h"
 #include <x86intrin.h>
 
 const uint32_t TestTable1[256]  __attribute((aligned(16))) ={
@@ -144,7 +144,7 @@ const uint32_t TestTable4[256]  __attribute((aligned(16))) ={
 static inline void SubAndShiftAndMixAddRound(uint32_t *restrict out, uint32_t *temp, uint32_t *restrict AesEncKey)
 {
 	uint8_t *state = &temp[0];
-	
+
 	out[0]= TestTable1[state[0]] ^ TestTable2[state[5]] ^ TestTable3[state[10]] ^ TestTable4[state[15]] ^ AesEncKey[0];
 	out[1]= TestTable4[state[3]] ^ TestTable1[state[4]] ^ TestTable2[state[9]]  ^ TestTable3[state[14]] ^ AesEncKey[1];
 	out[2]= TestTable3[state[2]] ^ TestTable4[state[7]] ^ TestTable1[state[8]]  ^ TestTable2[state[13]] ^ AesEncKey[2];
@@ -193,7 +193,7 @@ static inline void mul_sum_xor_dst(const uint8_t *a, uint8_t *c, uint8_t *dst)
 {
     uint64_t hi, lo = mul128(((uint64_t *)a)[0], ((uint64_t *)dst)[0], &hi) + ((uint64_t *)c)[1];
 	hi += ((uint64_t *)c)[0];
-	
+
     ((uint64_t *)c)[0] = ((uint64_t*) dst)[0] ^ hi;
     ((uint64_t *)c)[1] = ((uint64_t*) dst)[1] ^ lo;
     ((uint64_t *)dst)[0] = hi;
@@ -206,15 +206,15 @@ static inline void xor_blocks(uint8_t *restrict a, const uint8_t *restrict b) {
 }
 
 void cryptonight_hash_ctx(void *restrict output, const void *restrict input, struct cryptonight_ctx *restrict ctx) {
-    
+
     ctx->aes_ctx = (oaes_ctx*) oaes_alloc();
     size_t i, j;
     //hash_process(&ctx->state.hs, (const uint8_t*) input, 76);
     keccak((const uint8_t *)input, 76, &ctx->state.hs, 200);
     memcpy(ctx->text, ctx->state.init, INIT_SIZE_BYTE);
-    
+
     oaes_key_import_data(ctx->aes_ctx, ctx->state.hs.b, AES_KEY_SIZE);
-    
+
     for(i = 0; likely(i < MEMORY); i += INIT_SIZE_BYTE)
     {
 		for(j = 0; j < 10; j++)
@@ -230,13 +230,13 @@ void cryptonight_hash_ctx(void *restrict output, const void *restrict input, str
 		}
 		memcpy(&ctx->long_state[i], ctx->text, INIT_SIZE_BYTE);
 	}
-	
-	for (i = 0; i < 2; i++) 
+
+	for (i = 0; i < 2; i++)
     {
 	    ((uint64_t *)(ctx->a))[i] = ((uint64_t *)ctx->state.k)[i] ^  ((uint64_t *)ctx->state.k)[i+4];
 	    ((uint64_t *)(ctx->b))[i] = ((uint64_t *)ctx->state.k)[i+2] ^  ((uint64_t *)ctx->state.k)[i+6];
     }
-	
+
     //xor_blocks_dst(&ctx->state.k[0], &ctx->state.k[32], ctx->a);
     //xor_blocks_dst(&ctx->state.k[16], &ctx->state.k[48], ctx->b);
 
@@ -245,21 +245,21 @@ void cryptonight_hash_ctx(void *restrict output, const void *restrict input, str
         // written value <-+ hard function (AES or MUL) <+
         // next address  <-+
         //
-        // Iteration 1 
+        // Iteration 1
         SubAndShiftAndMixAddRound(ctx->c, &ctx->long_state[((uint64_t *)(ctx->a))[0] & 0x1FFFF0], ctx->a);
         xor_blocks_dst(ctx->c, ctx->b, &ctx->long_state[((uint64_t *)(ctx->a))[0] & 0x1FFFF0]);
-        // Iteration 2 
+        // Iteration 2
         mul_sum_xor_dst(ctx->c, ctx->a, &ctx->long_state[((uint64_t *)(ctx->c))[0] & 0x1FFFF0]);
-        // Iteration 3 
+        // Iteration 3
         SubAndShiftAndMixAddRound(ctx->b, &ctx->long_state[((uint64_t *)(ctx->a))[0] & 0x1FFFF0], ctx->a);
         xor_blocks_dst(ctx->b, ctx->c, &ctx->long_state[((uint64_t *)(ctx->a))[0] & 0x1FFFF0]);
-        // Iteration 4 
+        // Iteration 4
         mul_sum_xor_dst(ctx->b, ctx->a, &ctx->long_state[((uint64_t *)(ctx->b))[0] & 0x1FFFF0]);
     }
 
     memcpy(ctx->text, ctx->state.init, INIT_SIZE_BYTE);
     oaes_key_import_data(ctx->aes_ctx, &ctx->state.hs.b[32], AES_KEY_SIZE);
-    
+
     for(i = 0; likely(i < MEMORY); i += INIT_SIZE_BYTE)
     {
 		xor_blocks(&ctx->text[0x00], &ctx->long_state[i + 0x00]);
@@ -270,7 +270,7 @@ void cryptonight_hash_ctx(void *restrict output, const void *restrict input, str
 		xor_blocks(&ctx->text[0x50], &ctx->long_state[i + 0x50]);
 		xor_blocks(&ctx->text[0x60], &ctx->long_state[i + 0x60]);
 		xor_blocks(&ctx->text[0x70], &ctx->long_state[i + 0x70]);
-		
+
 		for(j = 0; j < 10; j++)
 		{
 			SubAndShiftAndMixAddRoundInPlace(&ctx->text[0], &ctx->aes_ctx->key->exp_data[j << 4]);
@@ -283,7 +283,7 @@ void cryptonight_hash_ctx(void *restrict output, const void *restrict input, str
 			SubAndShiftAndMixAddRoundInPlace(&ctx->text[0x70], &ctx->aes_ctx->key->exp_data[j << 4]);
 		}
 	}
-		
+
     memcpy(ctx->state.init, ctx->text, INIT_SIZE_BYTE);
     //hash_permutation(&ctx->state.hs);
     keccakf(&ctx->state.hs, 24);

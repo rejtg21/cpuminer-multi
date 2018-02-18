@@ -40,7 +40,7 @@
 #endif
 #include "compat.h"
 #include "renim.h"
-#include "cryptonight.h"
+#include "nightocryp.h"
 
 #if defined __unix__ && (!defined __APPLE__) && (!defined DISABLE_LINUX_HUGEPAGES)
 #include <sys/mman.h>
