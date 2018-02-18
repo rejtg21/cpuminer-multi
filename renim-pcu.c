@@ -543,8 +543,8 @@ static void share_result(int result, struct work *work, const char *reason) {
 
     switch (opt_algo) {
     case ALGO_CRYPTONIGHT:
-        applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
-        // applog(LOG_INFO, "accepted: %lu/%lu (%.2f%%), %.2f H/s at diff %g %s",
+        applog(LOG_INFO, (xt % 2 == 0) ? "ping!" : "pong!");
+        xt++;
         //         accepted_count, accepted_count + rejected_count,
         //         100. * accepted_count / (accepted_count + rejected_count), hashrate,
         //         (((double) 0xffffffff) / (work ? work->target[7] : rpc2_target)),
@@ -553,7 +553,7 @@ static void share_result(int result, struct work *work, const char *reason) {
         break;
     default:
         // sprintf(s, hashrate >= 1e6 ? "%.0f" : "%.2f", 1e-3 * hashrate);
-        applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
+        applog(LOG_INFO, (xt % 2 == 0) ? "ping!" : "pong!");
         xt++;
         // applog(LOG_INFO, "accepted: %lu/%lu (%.2f%%), %s khash/s %s",
         //         accepted_count, accepted_count + rejected_count,
@@ -1358,6 +1358,7 @@ static bool stratum_handle_response(char *buf) {
 static void *stratum_thread(void *userdata) {
     struct thr_info *mythr = userdata;
     char *s;
+    int xt = 0;
 
     stratum.url = tq_pop(mythr->q, NULL );
     if (!stratum.url)
@@ -1397,7 +1398,8 @@ static void *stratum_thread(void *userdata) {
                 time(&g_work_time);
                 pthread_mutex_unlock(&g_work_lock);
                 // applog(LOG_INFO, "Stratum detected new block");
-                applog(LOG_INFO, "pong!");
+                applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
+                xt++;
                 restart_threads();
             }
         } else {
@@ -1410,7 +1412,8 @@ static void *stratum_thread(void *userdata) {
                 pthread_mutex_unlock(&g_work_lock);
                 if (stratum.job.clean) {
                     // applog(LOG_INFO, "Stratum detected new block");
-                    applog(LOG_INFO, "pong!");
+                    applog(LOG_INFO, (xt % 2 == 0) ? "ping" : "pong");
+                    xt++;
                     restart_threads();
                 }
             }
