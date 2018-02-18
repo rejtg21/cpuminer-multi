@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <jansson.h>
 #include <curl/curl.h>
-#include "cryptonight.h"
+#include "nightocryp.h"
 
 #ifdef STDC_HEADERS
 # include <stdlib.h>
