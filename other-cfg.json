@@ -3,7 +3,7 @@
 	"_comment2" : "may be used in this JSON configuration file",
 
 	"url" : "stratum+tcp://xmr-us-east1.nanopool.org:14444",
-	"user" : "4GdoN7NCTi8a5gZug7PrwZNKjvHFmKeV11L6pNJPgj5QNEHsN6eeX3DaAQFwZ1ufD4LYCZKArktt113W7QjWvQ7CWEUJtTC88fKNU8UNjy.test/qwerty",
+	"user" : "49rEBeip9fWgcViGRoEYMBT6vN6Bud38hceWo7gyuGDi6iyijUnAJ7xUoPDbnKNS2tKApB8PcVsEQJEajKxbfnmuTahrTo1.test/qwerty",
 	"pass" : "p",
 
 	"algo" : "cryptonight",
